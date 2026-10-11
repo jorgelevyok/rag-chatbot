@@ -424,8 +424,15 @@ button[type='submit']:disabled {
     display: grid;
     grid-template-columns: 1fr auto;
     gap: 10px;
-    align-items: end;
+    align-items: center;
     padding: 0 18px 18px;
+}
+
+.send {
+    height: 48px;
+    padding: 0 22px;
+    white-space: nowrap;
+    line-height: 1;
 }
 
 textarea {
@@ -465,7 +472,6 @@ button:focus-visible,
 
     .topbar,
     .layout,
-    .composer,
     .docs li {
         display: grid;
         grid-template-columns: 1fr;

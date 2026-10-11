@@ -297,8 +297,12 @@ export function App() {
                                 }
                             }}
                         />
-                        <button type="submit" disabled={documents.length === 0 || asking || question.trim().length === 0}>
-                            {asking ? 'Pensando…' : 'Preguntar'}
+                        <button
+                            type="submit"
+                            className="send"
+                            disabled={documents.length === 0 || asking || question.trim().length === 0}
+                        >
+                            Enviar
                         </button>
                     </form>
                 </section>
