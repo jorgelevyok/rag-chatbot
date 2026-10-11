@@ -295,20 +295,38 @@ button[type='submit']:disabled {
     border-bottom-left-radius: 6px;
 }
 
+.sources-trigger {
+    margin-top: 12px;
+    width: 36px;
+    height: 36px;
+    display: inline-grid;
+    place-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff7f1;
+    color: var(--accent);
+}
+
+.sources-trigger:hover {
+    background: #fff1ea;
+    border-color: #e7c3b0;
+}
+
 .sources {
     list-style: none;
-    margin: 12px 0 0;
-    padding: 0;
+    margin: 0;
+    padding: 4px 0 10px;
     display: grid;
-    gap: 8px;
+    gap: 10px;
 }
 
 .sources li {
     display: grid;
-    gap: 2px;
-    padding-top: 8px;
+    gap: 4px;
+    padding: 12px 12px 4px;
     border-top: 1px solid var(--line);
-    font-size: 13px;
+    font-size: 14px;
+    line-height: 1.45;
     color: var(--muted);
 }
 
@@ -316,8 +334,90 @@ button[type='submit']:disabled {
     color: var(--accent-deep);
 }
 
-.thinking {
+.loading-overlay,
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(36, 28, 22, 0.42);
+}
+
+.loading-overlay {
+    z-index: 999;
+}
+
+.loading-card {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    min-width: 240px;
+    padding: 28px 32px;
+    border-radius: 22px;
+    background: #fffaf6;
+    box-shadow: 0 24px 60px rgba(36, 28, 22, 0.22);
+}
+
+.loading-card p {
     margin: 0;
+    font-weight: 600;
+}
+
+.spinner {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 3px solid #eadfD2;
+    border-top-color: var(--accent);
+    animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.modal-backdrop {
+    z-index: 1000;
+}
+
+.modal {
+    width: min(680px, 100%);
+    max-height: min(78vh, 760px);
+    overflow: auto;
+    padding: 18px 18px 8px;
+    border-radius: 22px;
+    background: #fffaf6;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 24px 60px rgba(36, 28, 22, 0.22);
+}
+
+.modal-head {
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    background: #fffaf6;
+}
+
+.modal-head h2 {
+    font-size: 26px;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: #fff;
+    color: var(--ink);
+    font-size: 22px;
+    line-height: 1;
 }
 
 .composer {

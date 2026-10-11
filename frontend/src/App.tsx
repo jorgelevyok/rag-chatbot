@@ -26,7 +26,9 @@ export function App() {
     const [asking, setAsking] = useState(false);
     const [messages, setMessages] = useState<TranscriptItem[]>([]);
     const [error, setError] = useState('');
+    const [openSources, setOpenSources] = useState<ChatReply['sources'] | null>(null);
     const threadRef = useRef<HTMLDivElement>(null);
+    const closeSourcesRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         void loadDocuments();
@@ -35,6 +37,20 @@ export function App() {
     useEffect(() => {
         threadRef.current?.scrollTo({ top: threadRef.current.scrollHeight, behavior: 'smooth' });
     }, [messages, asking]);
+
+    useEffect(() => {
+        if (!openSources) {
+            return;
+        }
+        closeSourcesRef.current?.focus();
+        function onKey(event: KeyboardEvent) {
+            if (event.key === 'Escape') {
+                setOpenSources(null);
+            }
+        }
+        window.addEventListener('keydown', onKey);
+        return () => window.removeEventListener('keydown', onKey);
+    }, [openSources]);
 
     async function loadDocuments() {
         setLoadingDocs(true);
@@ -248,22 +264,19 @@ export function App() {
                                 <article key={message.id} className="bubble assistant">
                                     <p>{message.content}</p>
                                     {message.sources.length > 0 ? (
-                                        <ul className="sources">
-                                            {message.sources.map((source, index) => (
-                                                <li key={`${message.id}-${index}`}>
-                                                    <strong>
-                                                        {source.document_name}
-                                                        {source.page ? ` · pág. ${source.page}` : ''}
-                                                    </strong>
-                                                    <span>{source.excerpt}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
+                                        <button
+                                            type="button"
+                                            className="sources-trigger"
+                                            title="Ver fragmentos"
+                                            aria-label={`Ver ${message.sources.length} fragmentos`}
+                                            onClick={() => setOpenSources(message.sources)}
+                                        >
+                                            <FragmentsIcon />
+                                        </button>
                                     ) : null}
                                 </article>
                             ),
                         )}
-                        {asking ? <p className="muted thinking">Buscando en los fragmentos…</p> : null}
                     </div>
 
                     <form className="composer" onSubmit={onAsk}>
@@ -290,7 +303,67 @@ export function App() {
                     </form>
                 </section>
             </main>
+
+            {asking ? (
+                <div className="loading-overlay" role="status" aria-live="polite">
+                    <div className="loading-card">
+                        <span className="spinner" aria-hidden="true" />
+                        <p>Buscando en los fragmentos…</p>
+                    </div>
+                </div>
+            ) : null}
+
+            {openSources ? (
+                <div className="modal-backdrop" onClick={() => setOpenSources(null)}>
+                    <div
+                        className="modal"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="sources-title"
+                        onClick={(event) => event.stopPropagation()}
+                    >
+                        <div className="modal-head">
+                            <h2 id="sources-title">Fragmentos</h2>
+                            <button
+                                ref={closeSourcesRef}
+                                type="button"
+                                className="modal-close"
+                                aria-label="Cerrar fragmentos"
+                                onClick={() => setOpenSources(null)}
+                            >
+                                ×
+                            </button>
+                        </div>
+                        <ul className="sources">
+                            {openSources.map((source, index) => (
+                                <li key={`${source.document_id_public}-${source.page ?? 'x'}-${index}`}>
+                                    <strong>
+                                        {source.document_name}
+                                        {source.page ? ` · pág. ${source.page}` : ''}
+                                    </strong>
+                                    <span>{source.excerpt}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+            ) : null}
         </div>
+    );
+}
+
+function FragmentsIcon() {
+    return (
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+                d="M7 3.75h7.1L19 8.55V20.25H7V3.75Z"
+                stroke="currentColor"
+                strokeWidth="1.7"
+                strokeLinejoin="round"
+            />
+            <path d="M14 4.1V8.7h4.55" stroke="currentColor" strokeWidth="1.7" strokeLinejoin="round" />
+            <path d="M10 12.4h6M10 16h4.2" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+        </svg>
     );
 }
 
